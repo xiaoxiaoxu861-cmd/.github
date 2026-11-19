@@ -1,0 +1,54 @@
+CREATE DATABASE IF NOT EXISTS minimall_test DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE minimall_test;
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  phone VARCHAR(11) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  failed_attempts INT NOT NULL DEFAULT 0,
+  locked_until DATETIME NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS products (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  description VARCHAR(500) NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  stock INT NOT NULL DEFAULT 0,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS carts (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  product_id INT NOT NULL,
+  quantity INT NOT NULL DEFAULT 1,
+  selected TINYINT(1) NOT NULL DEFAULT 1,
+  UNIQUE KEY uk_cart_user_product (user_id, product_id),
+  CONSTRAINT fk_cart_user FOREIGN KEY (user_id) REFERENCES users(id),
+  CONSTRAINT fk_cart_product FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+CREATE TABLE IF NOT EXISTS orders (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  order_no VARCHAR(40) NOT NULL UNIQUE,
+  user_id INT NOT NULL,
+  total_amount DECIMAL(10,2) NOT NULL,
+  status ENUM('PENDING','PAID','CANCELLED') NOT NULL DEFAULT 'PENDING',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  paid_at DATETIME NULL,
+  CONSTRAINT fk_order_user FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS order_items (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  order_id INT NOT NULL,
+  product_id INT NOT NULL,
+  product_name VARCHAR(100) NOT NULL,
+  unit_price DECIMAL(10,2) NOT NULL,
+  quantity INT NOT NULL,
+  subtotal DECIMAL(10,2) NOT NULL,
+  CONSTRAINT fk_item_order FOREIGN KEY (order_id) REFERENCES orders(id),
+  CONSTRAINT fk_item_product FOREIGN KEY (product_id) REFERENCES products(id)
+);
