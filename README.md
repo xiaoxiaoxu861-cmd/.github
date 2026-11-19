@@ -1,6 +1,7 @@
 # .github
 **CI状态：**
 <img width="375" height="32" alt="image" src="https://github.com/user-attachments/assets/106ffef2-2e62-4619-a4a0-df0e851250e0" />
+<img width="700" height="206" alt="image" src="https://github.com/user-attachments/assets/836e6473-467c-487d-8449-49fafd48235f" />
 
 
 **项目说明：**
